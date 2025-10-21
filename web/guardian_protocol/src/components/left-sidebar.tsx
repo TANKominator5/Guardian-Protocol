@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BarChart3,
-  AlertCircle,
-  Clock,
+  LayoutDashboard,
   Users,
-  Settings,
-  HelpCircle,
+  AlertTriangle,
+  Clock,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -16,12 +15,12 @@ const navItems = [
   {
     label: "Dashboard",
     href: "/",
-    icon: BarChart3,
+    icon: LayoutDashboard,
   },
   {
-    label: "Alerts",
-    href: "/alerts",
-    icon: AlertCircle,
+    label: "Entities",
+    href: "/entities",
+    icon: Users,
   },
   {
     label: "Timeline",
@@ -29,22 +28,9 @@ const navItems = [
     icon: Clock,
   },
   {
-    label: "Entities",
-    href: "/entities",
-    icon: Users,
-  },
-];
-
-const secondaryItems = [
-  {
-    label: "Settings",
-    href: "/settings",
-    icon: Settings,
-  },
-  {
-    label: "Documentation",
-    href: "/docs",
-    icon: HelpCircle,
+    label: "Alerts",
+    href: "/alerts",
+    icon: AlertTriangle,
   },
 ];
 
@@ -52,92 +38,51 @@ export function LeftSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 border-r border-border bg-background flex flex-col h-screen">
-      {/* Header */}
+    <aside className="w-64 border-r border-border bg-sidebar flex flex-col">
+      {/* Logo */}
       <div className="p-6 border-b border-border">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-            <span className="text-white font-bold text-sm">CS</span>
+        <div className="flex items-center gap-2">
+          <Shield className="w-6 h-6 text-primary" />
+          <div>
+            <h1 className="font-bold text-lg text-sidebar-foreground">
+              Campus Security
+            </h1>
+            <p className="text-xs text-sidebar-foreground/60">
+              Entity Resolution
+            </p>
           </div>
-          <h1 className="font-semibold text-foreground">Campus Security</h1>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Entity Resolution System
-        </p>
       </div>
 
-      {/* Main Navigation */}
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        <div className="mb-6">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-3">
-            Main
-          </p>
-          <div className="space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* System Info */}
-        <div className="bg-muted/50 rounded-lg p-4 mb-6">
-          <p className="text-xs font-semibold text-foreground mb-3">
-            System Status
-          </p>
-          <div className="space-y-2 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Entities Tracked</span>
-              <span className="font-semibold text-foreground">1,247</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Active Alerts</span>
-              <span className="font-semibold text-red-500">12</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Last Sync</span>
-              <span className="font-semibold text-foreground">2m ago</span>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Secondary Navigation */}
-      <div className="p-4 border-t border-border space-y-1">
-        {secondaryItems.map((item) => {
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
+
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                "flex items-center gap-3 px-4 py-2 rounded-lg transition-colors",
                 isActive
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                  : "text-sidebar-foreground hover:bg-sidebar-accent"
               )}
             >
-              <Icon className="w-4 h-4" />
-              {item.label}
+              <Icon className="w-5 h-5" />
+              <span className="font-medium">{item.label}</span>
             </Link>
           );
         })}
+      </nav>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-sidebar-border">
+        <p className="text-xs text-sidebar-foreground/60">
+          Campus Security System v1.0
+        </p>
       </div>
     </aside>
   );

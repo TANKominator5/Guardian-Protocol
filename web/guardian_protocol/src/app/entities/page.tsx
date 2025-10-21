@@ -14,7 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Sample entities data
 const sampleEntities = [
   {
     entity_id: "E-134",
