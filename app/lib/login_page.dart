@@ -127,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset('assets/images/crossheadlogo.png', height: 80),
+                  Image.asset('assets/images/crossheadlogo.PNG', height: 80),
                   SizedBox(height: 24),
                   Text('Sign in to your account', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
                   SizedBox(height: 8),
@@ -170,11 +170,13 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 16),
                   OutlinedButton.icon(
-                    // You need a google logo in 'assets/images/google_logo.png'
-                    icon: Image.asset('assets/images/google_logo.png', height: 20),
+                    icon: Icon(Icons.login, size: 20),
                     onPressed: _googleSignIn,
-                    label: Text('Sign in with google'),
-                    style: OutlinedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                    label: Text('Sign in with Google'),
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
                   ),
                   SizedBox(height: 16),
                   Row(children: [

@@ -54,6 +54,11 @@ class _DataCollectionPageState extends State<DataCollectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Complete Your Profile'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -64,7 +69,7 @@ class _DataCollectionPageState extends State<DataCollectionPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset('assets/images/crossheadlogo.png', height: 60),
+                  Image.asset('assets/images/crossheadlogo.PNG', height: 60),
                   SizedBox(height: 20),
                   Text('Fill up your details', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
                   SizedBox(height: 30),
@@ -91,7 +96,12 @@ class _DataCollectionPageState extends State<DataCollectionPage> {
                       ? Center(child: CircularProgressIndicator())
                       : ElevatedButton(
                     onPressed: _saveProfile,
-                    style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 16)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade700,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
                     child: Text('Save and Continue'),
                   ),
                 ],

@@ -52,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset('assets/images/crossheadlogo.png', height: 80),
+                  Image.asset('assets/images/crossheadlogo.PNG', height: 80),
                   SizedBox(height: 24),
                   Text('Welcome', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
                   SizedBox(height: 8),
@@ -77,18 +77,30 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   SizedBox(height: 16),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Checkbox(value: _agreeToTerms, onChanged: (val) => setState(() => _agreeToTerms = val!)),
                       Expanded(
-                        child: RichText(
-                          text: TextSpan(
-                            text: 'I agree to the ',
-                            style: DefaultTextStyle.of(context).style,
-                            children: <TextSpan>[
-                              TextSpan(text: 'terms and conditions', style: TextStyle(color: Colors.blue), recognizer: TapGestureRecognizer()..onTap = () {}),
-                              TextSpan(text: ' and '),
-                              TextSpan(text: 'Privacy Policy', style: TextStyle(color: Colors.blue), recognizer: TapGestureRecognizer()..onTap = () {}),
-                            ],
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'I agree to the ',
+                              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'terms and conditions',
+                                  style: TextStyle(color: Colors.blue, fontSize: 14),
+                                  recognizer: TapGestureRecognizer()..onTap = () {},
+                                ),
+                                TextSpan(text: ' and '),
+                                TextSpan(
+                                  text: 'Privacy Policy',
+                                  style: TextStyle(color: Colors.blue, fontSize: 14),
+                                  recognizer: TapGestureRecognizer()..onTap = () {},
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -99,15 +111,23 @@ class _SignUpPageState extends State<SignUpPage> {
                       ? Center(child: CircularProgressIndicator())
                       : ElevatedButton(
                     onPressed: _signUp,
-                    style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 16)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade700,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
                     child: Text('Sign Up'),
                   ),
                   SizedBox(height: 16),
                   OutlinedButton.icon(
-                    icon: Image.asset('assets/images/google_logo.png', height: 20),
+                    icon: Icon(Icons.login, size: 20),
                     onPressed: () {}, // Implement Google Sign-Up similarly to Sign-In
-                    label: Text('Sign up with google'),
-                    style: OutlinedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 12)),
+                    label: Text('Sign up with Google'),
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
                   ),
                   SizedBox(height: 16),
                   Row(children: [Expanded(child: Divider()), Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text('or')), Expanded(child: Divider())]),
