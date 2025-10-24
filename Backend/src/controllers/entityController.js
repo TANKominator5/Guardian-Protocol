@@ -2,78 +2,151 @@ import supabase from "../supabase/client.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/api-Error.js";
 
+
+//get all entities
+export const getEntities = asyncHandler(async (req, res) => {
+  const { query, status, limit = 50, offset = 0 } = req.query;
+
+  let baseQuery = supabase
+    .from("entry")
+    .select(`
+      entry_id,
+      user_id,
+      status,
+      last_seen,
+      location,
+      profiles (
+        id,
+        full_name,
+        department,
+        course,
+        roll_no
+      )
+    `)
+    .range(Number(offset), Number(offset) + Number(limit) - 1);
+
+  // 🔹 Optional: filter by status
+  if (status) {
+    baseQuery = baseQuery.eq("status", status);
+  }
+
+  // 🔹 Optional: search by user full_name or roll_no
+  if (query) {
+    baseQuery = baseQuery.ilike("profiles.full_name", `%${query}%`);
+  }
+
+  const { data, error } = await baseQuery;
+
+  if (error) {
+    console.error("Error fetching entities:", error);
+    throw new ApiError(500, "Database query failed");
+  }
+
+  res.status(200).json({
+    success: true,
+    count: data.length,
+    data
+  });
+});
+
 // 🧭 Get entity by ID
 export const getEntityById = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params; // This is the user_id
 
   if (!id) {
-    throw new ApiError(400, "Entity ID is required");
+    throw new ApiError(400, "User ID is required");
   }
 
   const { data, error } = await supabase
-    .from("entities")
+    .from("entry")
     .select(`
-      *,
-      devices:devices(*),
-      access_cards:access_cards(*)
+      entry_id,
+      user_id,
+      status,
+      last_seen,
+      location,
+      profiles (
+        id,
+        full_name,
+        department,
+        course,
+        roll_no,
+        gender,
+        current_year,
+        current_semester,
+        room_id
+      )
     `)
-    .eq("id", id)
-    .single();
+    .eq("user_id", id)
+    .maybeSingle(); // allows null if not found without throwing an error
 
   if (error) {
     console.error("Error fetching entity:", error);
-    throw new ApiError(404, "Entity not found");
+    throw new ApiError(500, "Database query failed");
   }
 
   if (!data) {
-    throw new ApiError(404, "Entity not found");
+    throw new ApiError(404, "Entity not found for this user ID");
   }
 
-  res.status(200).json({ 
-    success: true, 
-    data 
+  res.status(200).json({
+    success: true,
+    data
   });
 });
 
 // 🔍 Search entities by name, ID, or other fields
 export const searchEntities = asyncHandler(async (req, res) => {
-  const { query } = req.query;
+  const { query, limit = 50, offset = 0 } = req.query;
 
-  if (!query || query.trim() === '') {
-    return res.status(200).json({ 
-      success: true, 
-      count: 0, 
-      data: [] 
-    });
-  }
-
-  // Clean the query to prevent SQL injection
-  const cleanQuery = query.toString().trim();
-  
-  try {
-    // Search in multiple fields using OR conditions
-    const { data, error, count } = await supabase
-      .from('entities')
-      .select('*', { count: 'exact' })
-      .or(`primary_name.ilike.%${cleanQuery}%,aliases.cs.{"${cleanQuery}"}`)
-      .order('last_seen', { ascending: false })
-      .limit(50);
-
-    if (error) {
-      console.error('Search error:', error);
-      throw new ApiError(500, 'Failed to perform search');
-    }
-
-    res.status(200).json({
+  if (!query || query.trim() === "") {
+    return res.status(200).json({
       success: true,
-      count: count || 0,
-      data: data || []
+      count: 0,
+      data: [],
     });
-  } catch (error) {
-    console.error('Search exception:', error);
-    throw new ApiError(500, 'An error occurred during search');
   }
+
+  const cleanQuery = query.toString().trim();
+
+  const { data, error } = await supabase
+    .from("entry")
+    .select(`
+      entry_id,
+      user_id,
+      status,
+      last_seen,
+      location,
+      profiles (
+        id,
+        full_name,
+        department,
+        course,
+        roll_no
+      )
+    `)
+    .or(
+      `
+      profiles.full_name.ilike.%${cleanQuery}%,
+      profiles.roll_no.ilike.%${cleanQuery}%,
+      status.ilike.%${cleanQuery}%
+      `
+    )
+    .range(Number(offset), Number(offset) + Number(limit) - 1)
+    .order("last_seen", { ascending: false });
+
+  if (error) {
+    console.error("Search error:", error);
+    throw new ApiError(500, "Database query failed");
+  }
+
+  res.status(200).json({
+    success: true,
+    count: data?.length || 0,
+    data: data || [],
+  });
 });
+
 
 // ⚙️ Update entity status
 export const updateEntityStatus = asyncHandler(async (req, res) => {
@@ -95,9 +168,9 @@ export const updateEntityStatus = asyncHandler(async (req, res) => {
   }
 
   const { data: existingEntity } = await supabase
-    .from('entities')
-    .select('id')
-    .eq('id', id)
+    .from('entry')
+    .select('user_id')
+    .eq('user_id', id)
     .single();
 
   if (!existingEntity) {
@@ -105,12 +178,12 @@ export const updateEntityStatus = asyncHandler(async (req, res) => {
   }
 
   const { data, error } = await supabase
-    .from('entities')
+    .from('entry')
     .update({ 
       status,
       updated_at: new Date().toISOString() 
     })
-    .eq('id', id)
+    .eq('user_id', id)
     .select()
     .single();
 

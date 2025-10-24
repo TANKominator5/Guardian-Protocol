@@ -1,9 +1,10 @@
 import express from "express";
-import { getEntityById, searchEntities, updateEntityStatus } from "../controllers/entityController.js";
+import { getEntities, getEntityById, updateEntityStatus } from "../controllers/entityController.js";
+
 const router = express.Router();
 
-router.get("/:id", getEntityById);
-router.get("/", searchEntities);
-router.put("/:id/status", updateEntityStatus);
+router.get("/", getEntities);                 // ?query, ?status, ?limit, ?offset
+router.get("/:id", getEntityById);            // /api/entities/:id
+router.put("/:id/status", updateEntityStatus); // Update status field
 
 export default router;
