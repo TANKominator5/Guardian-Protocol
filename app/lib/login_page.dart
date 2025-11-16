@@ -15,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  bool _rememberMe = false;
 
   /// Signs in the user with email and password
   Future<void> _signIn() async {
@@ -150,9 +151,25 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // You can add state management for this checkbox if needed
-                      Row(children: [Checkbox(value: false, onChanged: (val){}), Text('Remember me')]),
-                      TextButton(onPressed: (){}, child: Text('Forgot Password?')),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _rememberMe,
+                            onChanged: (val) {
+                              setState(() {
+                                _rememberMe = val ?? false;
+                              });
+                            },
+                          ),
+                          Text('Remember me'),
+                        ],
+                      ),
+                      Flexible(
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text('Forgot Password?'),
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(height: 16),
@@ -170,7 +187,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 16),
                   OutlinedButton.icon(
-                    icon: Icon(Icons.login, size: 20),
+                    icon: Image.asset(
+                      'assets/images/google-logo.png',
+                      height: 35,
+                      width: 35,
+                    ),
                     onPressed: _googleSignIn,
                     label: Text('Sign in with Google'),
                     style: OutlinedButton.styleFrom(

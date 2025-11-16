@@ -39,6 +39,29 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  /// Signs up the user with Google OAuth
+  Future<void> _googleSignUp() async {
+    if (!_agreeToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('You must agree to the terms and conditions'), backgroundColor: Colors.red),
+      );
+      return;
+    }
+
+    try {
+      await Supabase.instance.client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'io.supabase.crossheadapp://login-callback/',
+      );
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,8 +144,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   SizedBox(height: 16),
                   OutlinedButton.icon(
-                    icon: Icon(Icons.login, size: 20),
-                    onPressed: () {}, // Implement Google Sign-Up similarly to Sign-In
+                    icon: Image.asset(
+                      'assets/images/google-logo.png',
+                      height: 35,
+                      width: 35,
+                    ),
+                    onPressed: _googleSignUp,
                     label: Text('Sign up with Google'),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12),
